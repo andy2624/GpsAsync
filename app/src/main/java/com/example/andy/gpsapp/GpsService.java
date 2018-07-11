@@ -12,6 +12,10 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -24,6 +28,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -99,42 +105,12 @@ class PostReqServer extends AsyncTask<String, String, InputStream> {
 
         String urlString = "https://nitsbirco7.execute-api.ap-south-1.amazonaws.com/latest/"; // URL to call
 
-       // String data = params[1]; //data to post
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("name","Anand"));
+        params.add(new BasicNameValuePair("loc","Anand"));
+        params.add(new BasicNameValuePair("time","sometime"));
 
-        OutputStream out = null;
-        try {
-
-           // SharedPreferences prefs = mContext.getSharedPreferences("location",)
-
-            URL url = new URL(urlString);
-
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            out = new BufferedOutputStream(urlConnection.getOutputStream());
-
-            BufferedWriter writer = new BufferedWriter (new OutputStreamWriter(out, "UTF-8"));
-
-            //writer.write(data);
-
-            writer.flush();
-
-            writer.close();
-
-            out.close();
-
-            urlConnection.connect();
-
-
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-
-
-
-        }
-
-
-
+        JSONObject response = JsonParser.makeHttpsRequest(urlString,"POST",params);
 
         return null;
     }
