@@ -1,5 +1,8 @@
 package com.example.andy.gpsapp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Parameters {
 
     String name;
@@ -29,5 +32,21 @@ public class Parameters {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String toJSON(){
+
+        JSONObject jsonObject= new JSONObject();
+        try {
+            jsonObject.put("id", getName());
+            jsonObject.put("loc", getLocation());
+            jsonObject.put("time", getTime());
+
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+
     }
 }
