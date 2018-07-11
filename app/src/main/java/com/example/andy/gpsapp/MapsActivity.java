@@ -2,10 +2,13 @@ package com.example.andy.gpsapp;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -28,6 +31,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locationManager;
     LocationListener locationListener;
 
+    SharedPreferences mPreferences;
+    SharedPreferences.Editor mEditor;
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -39,6 +45,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+                mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                mEditor = mPreferences.edit();
+
+                mEditor.putString("location", locationListener.toString());
+                mEditor.commit();
+
+                startService(new Intent(getApplicationContext(), GpsService.class));
             }
         }
     }
