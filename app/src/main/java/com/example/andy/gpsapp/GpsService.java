@@ -1,7 +1,9 @@
 package com.example.andy.gpsapp;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.AsyncTask;
@@ -10,8 +12,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -23,8 +30,11 @@ import javax.net.ssl.SSLContext;
 
 public class GpsService extends Service implements LocationListener{
 
+Context mContext;
 
-
+    public GpsService(Context mContext) {
+        this.mContext = mContext;
+    }
 
     @Nullable
     @Override
@@ -58,8 +68,8 @@ public class GpsService extends Service implements LocationListener{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-//        PostReqServer reqServer = new PostReqServer();
-//        reqServer.execute();
+        PostReqServer reqServer = new PostReqServer();
+        reqServer.execute();
 
         return START_STICKY;
     }
@@ -87,58 +97,43 @@ class PostReqServer extends AsyncTask<String, String, InputStream> {
     @Override
     protected InputStream doInBackground(String... strings) {
 
-        URL url = null;
+        String urlString = "https://nitsbirco7.execute-api.ap-south-1.amazonaws.com/latest/"; // URL to call
+
+       // String data = params[1]; //data to post
+
+        OutputStream out = null;
         try {
-            url = new URL("https://nitsbirco7.execute-api.ap-south-1.amazonaws.com/latest/");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        HttpsURLConnection conn = null;
-        try {
-            conn = (HttpsURLConnection) url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+           // SharedPreferences prefs = mContext.getSharedPreferences("location",)
+
+            URL url = new URL(urlString);
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            out = new BufferedOutputStream(urlConnection.getOutputStream());
+
+            BufferedWriter writer = new BufferedWriter (new OutputStreamWriter(out, "UTF-8"));
+
+            //writer.write(data);
+
+            writer.flush();
+
+            writer.close();
+
+            out.close();
+
+            urlConnection.connect();
+
+
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+
+
+
         }
 
-        // Create the SSL connection
-        SSLContext sc = null;
-        try {
-            sc = SSLContext.getInstance("TLS");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        try {
-            sc.init(null, null, new java.security.SecureRandom());
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
-        conn.setSSLSocketFactory(sc.getSocketFactory());
 
-
-        // set Timeout and method
-        conn.setReadTimeout(7000);
-        conn.setConnectTimeout(7000);
-        try {
-            conn.setRequestMethod("POST");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        conn.setDoInput(true);
-
-        // Add any data you wish to post here
-
-        try {
-            conn.connect();
-            int responseCode = conn.getResponseCode();
-            Log.i("ResponseCode", "doInBackground: " + responseCode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            return conn.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
         return null;

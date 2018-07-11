@@ -34,6 +34,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
 
+    Context context = this;
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -52,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mEditor.putString("location", locationListener.toString());
                 mEditor.commit();
 
+                new GpsService(this);
                 startService(new Intent(getApplicationContext(), GpsService.class));
             }
         }
