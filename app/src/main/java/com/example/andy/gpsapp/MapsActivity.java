@@ -55,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mEditor.commit();
 
                 new GpsService(this);
-                startService(new Intent(getApplicationContext(), GpsService.class));
+                startService(new Intent(this, GpsService.class));
             }
         }
     }

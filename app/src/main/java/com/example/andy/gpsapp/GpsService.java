@@ -3,36 +3,23 @@ package com.example.andy.gpsapp;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
-
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 
 public class GpsService extends Service implements LocationListener{
 
@@ -97,11 +84,11 @@ Context mContext;
 
 
 
-class PostReqServer extends AsyncTask<String, String, InputStream> {
+class PostReqServer extends AsyncTask<String, String, String> {
 
 
     @Override
-    protected InputStream doInBackground(String... strings) {
+    protected String doInBackground(String... strings) {
 
         String urlString = "https://nitsbirco7.execute-api.ap-south-1.amazonaws.com/latest/"; // URL to call
 
